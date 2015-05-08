@@ -1,0 +1,27 @@
+{
+  "name": "node-scraper",
+  "version": "1.0.0",
+  "description": "Basic node web scraper",
+  "main": "scraper.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/slooker/node-scraper"
+  },
+  "dependencies" : {
+    "request"    : "latest",
+    "cheerio"    : "latest"
+  },
+  "keywords": [
+    "node",
+    "scraper"
+  ],
+  "author": "Shawn Looker",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/slooker/node-scraper/issues"
+  },
+  "homepage": "https://github.com/slooker/node-scraper"
+}
