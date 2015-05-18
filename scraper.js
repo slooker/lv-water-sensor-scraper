@@ -2,33 +2,36 @@ var request = require('request');
 var cheerio = require('cheerio');
 
 
-var url = 'http://www.imdb.com/title/tt1229340/';
+var stationDataUrl = 'http://gustfront.ccrfcd.org/station/station2.asp'
 
-request(url, function(error, response, html) {
+request(stationDataUrl, function(error, response, html) {
   if (!error) {
     var $ = cheerio.load(html);
-    var title, release, rating;
+    var finalData = [];
+    var $allRows = $('table tr').filter(function() {
+      return !$(this).hasClass('StationIDHeader');
+    }), allOdds = $allRows.map(function(index, element) {
+      if (index % 2 === 0) {
+        return {name: $(element).find('td').eq(1).text()};
+      };
+    }).get(), allEvens = $allRows.map(function(index, element) {
+      if (index % 2 === 1) {
+        return {location: $(element).find('td').eq(2).text()};
+      };
+    }).get(), finalData = [];
 
-    // We'll use the unique header class as a starting point.
-    $('.header').filter(function() {
-      // Let's store the data we filter into a variable so we can easily see what's going on.
-      var data = $(this);
+    finalData = allOdds.map(function(currentObject, index) {
+      var otherObject = allEvens[index];
 
-      // In examining the DOM we notice that the title rests within the first child element of the header tag. 
-      // Utilizing jQuery we can easily navigate and get the text by writing the following code:
-      title = data.children().first().text();
-      release = data.children().last().children().text();
+      for (var prop in otherObject) {
+        if (otherObject.hasOwnProperty(prop)) {
+          currentObject[prop] = otherObject[prop];
+        }
+      }
 
-      $('.star-box-giga-star').filter(function(){
-        var data = $(this);
-
-        // The .star-box-giga-star class was exactly where we wanted it to be.
-        // To get the rating, we can simply just get the .text(), no need to traverse the DOM any further
-        rating = data.text();
-      });
-
+      return currentObject;
     });
-
-    console.log("title: "+title+", Release: "+release+", rating: "+rating);
   }
+  console.log(finalData);
 });
+
